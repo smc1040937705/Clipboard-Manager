@@ -41,8 +41,8 @@ class ClipboardRepository:
             cursor.execute("""
                 INSERT INTO clipboard_records 
                 (content_type, text_content, image_data, file_paths, content_hash, 
-                 is_favorite, is_pinned, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                 is_favorite, is_pinned)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 record.content_type.value,
                 record.text_content,
@@ -51,7 +51,6 @@ class ClipboardRepository:
                 record.content_hash,
                 int(record.is_favorite),
                 int(record.is_pinned),
-                record.updated_at.isoformat() if record.updated_at else None,
             ))
             
             record.id = cursor.lastrowid
@@ -242,13 +241,13 @@ class ClipboardRepository:
         """切换收藏状态"""
         with self.db_manager.get_connection() as conn:
             cursor = conn.cursor()
-            
+
             cursor.execute("""
-                UPDATE clipboard_records 
-                SET is_pinned = NOT is_pinned
+                UPDATE clipboard_records
+                SET is_favorite = NOT is_favorite
                 WHERE id = ?
             """, (record_id,))
-            
+
             return cursor.rowcount > 0
     
     def toggle_pin(self, record_id: int) -> bool:

@@ -59,9 +59,9 @@ class SearchEngine:
                 relevance_score=relevance
             ))
         
-        # 按相关度排序
-        results.sort(key=lambda x: x.relevance_score, reverse=False)
-        
+        # 按相关度排序（分数高的排在前面）
+        results.sort(key=lambda x: x.relevance_score, reverse=True)
+
         return results
     
     def _find_matches(self, record: ClipboardRecord, keyword: str, 

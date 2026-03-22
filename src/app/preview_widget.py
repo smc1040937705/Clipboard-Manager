@@ -51,23 +51,23 @@ class PreviewWidget(QWidget):
         title_layout.addStretch()
         
         # 收藏按钮
-        self._fav_btn = QPushButton("")
-        self._fav_btn.setToolTip("收藏")
-        self._fav_btn.setFixedSize(30, 30)
+        self._fav_btn = QPushButton("收藏")
+        self._fav_btn.setToolTip("收藏/取消收藏")
+        self._fav_btn.setMinimumSize(60, 28)
         self._fav_btn.clicked.connect(self._on_favorite_clicked)
         title_layout.addWidget(self._fav_btn)
-        
+
         # 置顶按钮
-        self._pin_btn = QPushButton("")
-        self._pin_btn.setToolTip("置顶")
-        self._pin_btn.setFixedSize(30, 30)
+        self._pin_btn = QPushButton("置顶")
+        self._pin_btn.setToolTip("置顶/取消置顶")
+        self._pin_btn.setMinimumSize(60, 28)
         self._pin_btn.clicked.connect(self._on_pin_clicked)
         title_layout.addWidget(self._pin_btn)
-        
+
         # 删除按钮
-        self._delete_btn = QPushButton("")
-        self._delete_btn.setToolTip("删除")
-        self._delete_btn.setFixedSize(30, 30)
+        self._delete_btn = QPushButton("删除")
+        self._delete_btn.setToolTip("删除记录")
+        self._delete_btn.setMinimumSize(60, 28)
         self._delete_btn.clicked.connect(self._on_delete_clicked)
         title_layout.addWidget(self._delete_btn)
         
@@ -137,10 +137,11 @@ class PreviewWidget(QWidget):
         # 设置样式
         self.setStyleSheet("""
             QPushButton {
-                padding: 5px 15px;
+                padding: 4px 8px;
                 border: 1px solid #ccc;
                 border-radius: 4px;
                 background-color: #f5f5f5;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #e0e0e0;
@@ -217,10 +218,10 @@ class PreviewWidget(QWidget):
         self._image_label.setVisible(True)
         self._file_widget.setVisible(False)
         self._open_btn.setVisible(False)
-        
+
         if self._record.image_data:
             pixmap = QPixmap()
-            pixmap.loadFromData(self._record.image_data)
+            pixmap.loadFromData(QByteArray(self._record.image_data))
             
             if not pixmap.isNull():
                 # 缩放图片以适应显示区域
@@ -299,23 +300,25 @@ class PreviewWidget(QWidget):
     def _update_favorite_button(self):
         """更新收藏按钮状态"""
         if self._record and self._record.is_favorite:
-            self._fav_btn.setText("★")
-            self._fav_btn.setStyleSheet("color: gold;")
+            self._fav_btn.setText("已收藏")
+            self._fav_btn.setStyleSheet("color: #FF9800; font-weight: bold;")
         else:
-            self._fav_btn.setText("☆")
+            self._fav_btn.setText("收藏")
             self._fav_btn.setStyleSheet("")
-    
+
     def _update_pin_button(self):
         """更新置顶按钮状态"""
         if self._record and self._record.is_pinned:
-            self._pin_btn.setStyleSheet("color: #2196F3;")
+            self._pin_btn.setText("已置顶")
+            self._pin_btn.setStyleSheet("color: #2196F3; font-weight: bold;")
         else:
+            self._pin_btn.setText("置顶")
             self._pin_btn.setStyleSheet("")
     
     def _on_copy_clicked(self):
         """复制按钮点击"""
         if self._record:
-            self.delete_requested.emit(self._record)
+            self.copy_requested.emit(self._record)
     
     def _on_delete_clicked(self):
         """删除按钮点击"""
