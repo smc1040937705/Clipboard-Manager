@@ -113,7 +113,7 @@ class ClipboardRecord:
     
     def to_csv_row(self) -> dict:
         """转换为 CSV 行数据"""
-        return {
+        row = {
             "id": self.id,
             "content_type": self.content_type.name,
             "content": self.text_content or "",
@@ -122,6 +122,13 @@ class ClipboardRecord:
             "is_favorite": "1" if self.is_favorite else "0",
             "is_pinned": "1" if self.is_pinned else "0",
         }
+        
+        # 图片类型添加base64编码的图片数据
+        if self.content_type == ClipboardType.IMAGE and self.image_data:
+            import base64
+            row["content"] = base64.b64encode(self.image_data).decode('utf-8')
+        
+        return row
     
     @staticmethod
     def get_csv_headers() -> List[str]:

@@ -51,21 +51,21 @@ class PreviewWidget(QWidget):
         title_layout.addStretch()
         
         # 收藏按钮
-        self._fav_btn = QPushButton("")
+        self._fav_btn = QPushButton("☆")
         self._fav_btn.setToolTip("收藏")
         self._fav_btn.setFixedSize(30, 30)
         self._fav_btn.clicked.connect(self._on_favorite_clicked)
         title_layout.addWidget(self._fav_btn)
         
         # 置顶按钮
-        self._pin_btn = QPushButton("")
+        self._pin_btn = QPushButton("📌")
         self._pin_btn.setToolTip("置顶")
         self._pin_btn.setFixedSize(30, 30)
         self._pin_btn.clicked.connect(self._on_pin_clicked)
         title_layout.addWidget(self._pin_btn)
         
         # 删除按钮
-        self._delete_btn = QPushButton("")
+        self._delete_btn = QPushButton("✕")
         self._delete_btn.setToolTip("删除")
         self._delete_btn.setFixedSize(30, 30)
         self._delete_btn.clicked.connect(self._on_delete_clicked)
@@ -141,6 +141,7 @@ class PreviewWidget(QWidget):
                 border: 1px solid #ccc;
                 border-radius: 4px;
                 background-color: #f5f5f5;
+                font-size: 14px;
             }
             QPushButton:hover {
                 background-color: #e0e0e0;
@@ -149,6 +150,11 @@ class PreviewWidget(QWidget):
                 background-color: #d0d0d0;
             }
         """)
+        
+        # 设置操作按钮的特殊样式（确保图标显示）
+        self._fav_btn.setStyleSheet("font-size: 16px;")
+        self._pin_btn.setStyleSheet("font-size: 14px;")
+        self._delete_btn.setStyleSheet("font-size: 16px; font-weight: bold; color: #666;")
     
     def set_record(self, record: ClipboardRecord):
         """设置要显示的记录"""
@@ -315,7 +321,7 @@ class PreviewWidget(QWidget):
     def _on_copy_clicked(self):
         """复制按钮点击"""
         if self._record:
-            self.delete_requested.emit(self._record)
+            self.copy_requested.emit(self._record)
     
     def _on_delete_clicked(self):
         """删除按钮点击"""

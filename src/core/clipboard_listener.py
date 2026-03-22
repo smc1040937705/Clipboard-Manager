@@ -115,7 +115,7 @@ class ClipboardListener(QObject):
                 
                 if file_paths:
                     record = ClipboardRecord(
-                        content_type=ClipboardType.TEXT,
+                        content_type=ClipboardType.FILE,
                         file_paths=file_paths
                     )
             
