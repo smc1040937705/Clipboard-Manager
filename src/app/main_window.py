@@ -416,7 +416,7 @@ class MainWindow(QMainWindow):
         )
         
         if reply == QMessageBox.StandardButton.Yes:
-            count = self._repository.clear_all(keep_favorites=False)
+            count = self._repository.clear_all(keep_favorites=True)
             self._refresh_records()
             self._preview_widget.clear()
             self._status_bar.showMessage(f"已清空 {count} 条记录", 2000)

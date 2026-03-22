@@ -15,8 +15,7 @@ from ..shared.constants import DATA_DIR, DB_PATH, DB_TIMEOUT
 class DatabaseManager:
     """数据库管理器"""
     
-    # 数据库版本，用于迁移
-    CURRENT_VERSION = 1
+    CURRENT_VERSION = 2
     
     def __init__(self, db_path: Optional[Path] = None):
         self.db_path = db_path or DB_PATH
@@ -55,6 +54,7 @@ class DatabaseManager:
                     file_paths TEXT,
                     content_hash TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP,
                     is_favorite INTEGER DEFAULT 0,
                     is_pinned INTEGER DEFAULT 0
                 )
@@ -162,10 +162,14 @@ class DatabaseManager:
             cursor = conn.cursor()
             
             if target_version == 1:
-                # 版本 1 的迁移逻辑（初始版本，无需操作）
                 pass
             
-            # 更新版本号
+            if target_version == 2:
+                cursor.execute("PRAGMA table_info(clipboard_records)")
+                columns = [row[1] for row in cursor.fetchall()]
+                if 'updated_at' not in columns:
+                    cursor.execute("ALTER TABLE clipboard_records ADD COLUMN updated_at TIMESTAMP")
+            
             cursor.execute("""
                 INSERT OR REPLACE INTO db_metadata (key, value)
                 VALUES ('version', ?)
@@ -191,4 +195,5 @@ def get_db_manager() -> DatabaseManager:
     if _db_manager is None:
         _db_manager = DatabaseManager()
         _db_manager.init_database()
+        _db_manager.migrate()
     return _db_manager

@@ -60,7 +60,7 @@ class SearchEngine:
             ))
         
         # 按相关度排序
-        results.sort(key=lambda x: x.relevance_score, reverse=False)
+        results.sort(key=lambda x: x.relevance_score, reverse=True)
         
         return results
     

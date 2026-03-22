@@ -110,5 +110,5 @@ class RecordItemWidget(QWidget):
         """更新显示的记录"""
         self._record = record
         self._title_label.setText(truncate_text(record.display_title, 35))
-        self._time_label.setText(format_timestamp(record.updated_at))
+        self._time_label.setText(format_timestamp(record.updated_at or record.created_at))
         self._update_style()

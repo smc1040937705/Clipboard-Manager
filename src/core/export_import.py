@@ -12,7 +12,7 @@ from typing import List, Optional, Callable
 from io import StringIO
 
 from ..shared.models import ClipboardRecord
-from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME
+from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME, APP_VERSION
 from ..storage.repository import ClipboardRepository
 
 
@@ -223,6 +223,11 @@ class ExportImportManager:
                     # 设置内容
                     if content_type == ClipboardType.TEXT:
                         record.text_content = row.get('content', '')
+                    elif content_type == ClipboardType.IMAGE:
+                        image_data_b64 = row.get('image_data', '')
+                        if image_data_b64:
+                            import base64
+                            record.image_data = base64.b64decode(image_data_b64)
                     elif content_type == ClipboardType.FILE:
                         file_paths_str = row.get('file_paths', '')
                         if file_paths_str:

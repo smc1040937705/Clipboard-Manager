@@ -245,7 +245,7 @@ class ClipboardRepository:
             
             cursor.execute("""
                 UPDATE clipboard_records 
-                SET is_pinned = NOT is_pinned
+                SET is_favorite = NOT is_favorite
                 WHERE id = ?
             """, (record_id,))
             
