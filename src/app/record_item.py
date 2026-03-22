@@ -105,3 +105,10 @@ class RecordItemWidget(QWidget):
         """返回建议大小"""
         from PyQt6.QtCore import QSize
         return QSize(300, 50)
+    
+    def update_record(self, record: ClipboardRecord):
+        """更新显示的记录"""
+        self._record = record
+        self._title_label.setText(truncate_text(record.display_title, 35))
+        self._time_label.setText(format_timestamp(record.updated_at))
+        self._update_style()

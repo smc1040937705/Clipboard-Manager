@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from ..shared.models import ClipboardRecord, SearchResult
 from ..storage.repository import ClipboardRepository
 from ..shared.utils import highlight_text
+from ..shared.constants import ClipboardType
 
 
 @dataclass
@@ -59,7 +60,7 @@ class SearchEngine:
             ))
         
         # 按相关度排序
-        results.sort(key=lambda x: x.relevance_score, reverse=True)
+        results.sort(key=lambda x: x.relevance_score, reverse=False)
         
         return results
     
@@ -166,5 +167,3 @@ class SearchEngine:
         return [result.record for result in results]
 
 
-# 导入 ClipboardType
-from ..shared.constants import ClipboardType

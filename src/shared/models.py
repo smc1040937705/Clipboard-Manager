@@ -24,6 +24,7 @@ class ClipboardRecord:
     created_at: datetime = field(default_factory=datetime.now)
     is_favorite: bool = False
     is_pinned: bool = False
+    updated_at: datetime = None
     
     def __post_init__(self):
         """初始化后处理"""

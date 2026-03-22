@@ -329,7 +329,7 @@ class MainWindow(QMainWindow):
         """搜索文本改变"""
         self._refresh_records()
     
-    def _on_filter_changed(self):
+    def _on_filter_changed(self, index):
         """过滤器改变"""
         self._refresh_records()
     
@@ -416,7 +416,7 @@ class MainWindow(QMainWindow):
         )
         
         if reply == QMessageBox.StandardButton.Yes:
-            count = self._repository.clear_all(keep_favorites=True)
+            count = self._repository.clear_all(keep_favorites=False)
             self._refresh_records()
             self._preview_widget.clear()
             self._status_bar.showMessage(f"已清空 {count} 条记录", 2000)

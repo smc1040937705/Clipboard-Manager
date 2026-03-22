@@ -41,8 +41,8 @@ class ClipboardRepository:
             cursor.execute("""
                 INSERT INTO clipboard_records 
                 (content_type, text_content, image_data, file_paths, content_hash, 
-                 is_favorite, is_pinned)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                 is_favorite, is_pinned, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 record.content_type.value,
                 record.text_content,
@@ -51,6 +51,7 @@ class ClipboardRepository:
                 record.content_hash,
                 int(record.is_favorite),
                 int(record.is_pinned),
+                record.updated_at.isoformat() if record.updated_at else None,
             ))
             
             record.id = cursor.lastrowid
@@ -244,7 +245,7 @@ class ClipboardRepository:
             
             cursor.execute("""
                 UPDATE clipboard_records 
-                SET is_favorite = NOT is_favorite
+                SET is_pinned = NOT is_pinned
                 WHERE id = ?
             """, (record_id,))
             

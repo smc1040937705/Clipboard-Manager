@@ -51,21 +51,21 @@ class PreviewWidget(QWidget):
         title_layout.addStretch()
         
         # 收藏按钮
-        self._fav_btn = QPushButton("☆")
+        self._fav_btn = QPushButton("")
         self._fav_btn.setToolTip("收藏")
         self._fav_btn.setFixedSize(30, 30)
         self._fav_btn.clicked.connect(self._on_favorite_clicked)
         title_layout.addWidget(self._fav_btn)
         
         # 置顶按钮
-        self._pin_btn = QPushButton("📌")
+        self._pin_btn = QPushButton("")
         self._pin_btn.setToolTip("置顶")
         self._pin_btn.setFixedSize(30, 30)
         self._pin_btn.clicked.connect(self._on_pin_clicked)
         title_layout.addWidget(self._pin_btn)
         
         # 删除按钮
-        self._delete_btn = QPushButton("🗑")
+        self._delete_btn = QPushButton("")
         self._delete_btn.setToolTip("删除")
         self._delete_btn.setFixedSize(30, 30)
         self._delete_btn.clicked.connect(self._on_delete_clicked)
@@ -220,7 +220,7 @@ class PreviewWidget(QWidget):
         
         if self._record.image_data:
             pixmap = QPixmap()
-            pixmap.loadFromData(QByteArray(self._record.image_data))
+            pixmap.loadFromData(self._record.image_data)
             
             if not pixmap.isNull():
                 # 缩放图片以适应显示区域
@@ -315,7 +315,7 @@ class PreviewWidget(QWidget):
     def _on_copy_clicked(self):
         """复制按钮点击"""
         if self._record:
-            self.copy_requested.emit(self._record)
+            self.delete_requested.emit(self._record)
     
     def _on_delete_clicked(self):
         """删除按钮点击"""

@@ -12,7 +12,7 @@ from typing import List, Optional, Callable
 from io import StringIO
 
 from ..shared.models import ClipboardRecord
-from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME, APP_VERSION
+from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME
 from ..storage.repository import ClipboardRepository
 
 
