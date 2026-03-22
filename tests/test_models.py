@@ -171,28 +171,51 @@ class TestWindowState(unittest.TestCase):
         
         self.assertEqual(state.width, 1200)
         self.assertEqual(state.height, 800)
+        self.assertEqual(state.x, 100)
+        self.assertEqual(state.y, 100)
         self.assertFalse(state.is_maximized)
+        self.assertEqual(state.splitter_position, 350)
+        self.assertEqual(state.last_filter_type, 0)
+        self.assertEqual(state.last_search_text, "")
+        self.assertIsNone(state.last_selected_id)
     
     def test_to_dict(self):
         """测试转字典"""
         state = WindowState(
             width=1000,
             height=600,
-            is_maximized=True
+            x=200,
+            y=150,
+            is_maximized=True,
+            splitter_position=400,
+            last_filter_type=1,
+            last_search_text="test",
+            last_selected_id=42
         )
         
         data = state.to_dict()
         
         self.assertEqual(data['width'], 1000)
         self.assertEqual(data['height'], 600)
+        self.assertEqual(data['x'], 200)
+        self.assertEqual(data['y'], 150)
         self.assertTrue(data['is_maximized'])
+        self.assertEqual(data['splitter_position'], 400)
+        self.assertEqual(data['last_filter_type'], 1)
+        self.assertEqual(data['last_search_text'], "test")
+        self.assertEqual(data['last_selected_id'], 42)
     
     def test_from_dict(self):
         """测试从字典创建"""
         data = {
             'width': 800,
             'height': 600,
+            'x': 150,
+            'y': 100,
             'is_maximized': False,
+            'splitter_position': 300,
+            'last_filter_type': 2,
+            'last_search_text': 'hello',
             'last_selected_id': 42
         }
         
@@ -200,8 +223,61 @@ class TestWindowState(unittest.TestCase):
         
         self.assertEqual(state.width, 800)
         self.assertEqual(state.height, 600)
+        self.assertEqual(state.x, 150)
+        self.assertEqual(state.y, 100)
         self.assertFalse(state.is_maximized)
+        self.assertEqual(state.splitter_position, 300)
+        self.assertEqual(state.last_filter_type, 2)
+        self.assertEqual(state.last_search_text, 'hello')
         self.assertEqual(state.last_selected_id, 42)
+    
+    def test_from_dict_with_partial_data(self):
+        """测试从部分字典创建（缺失字段使用默认值）"""
+        data = {
+            'width': 800,
+            'height': 600,
+            'last_selected_id': 10
+        }
+        
+        state = WindowState.from_dict(data)
+        
+        self.assertEqual(state.width, 800)
+        self.assertEqual(state.height, 600)
+        self.assertEqual(state.x, 100)  # 默认值
+        self.assertEqual(state.y, 100)  # 默认值
+        self.assertFalse(state.is_maximized)  # 默认值
+        self.assertEqual(state.splitter_position, 350)  # 默认值
+        self.assertEqual(state.last_filter_type, 0)  # 默认值
+        self.assertEqual(state.last_search_text, "")  # 默认值
+        self.assertEqual(state.last_selected_id, 10)
+    
+    def test_roundtrip_serialization(self):
+        """测试序列化/反序列化的完整性"""
+        original = WindowState(
+            width=1024,
+            height=768,
+            x=50,
+            y=50,
+            is_maximized=False,
+            splitter_position=380,
+            last_filter_type=4,
+            last_search_text="search query",
+            last_selected_id=99
+        )
+        
+        # 序列化后再反序列化
+        state_dict = original.to_dict()
+        restored = WindowState.from_dict(state_dict)
+        
+        self.assertEqual(restored.width, 1024)
+        self.assertEqual(restored.height, 768)
+        self.assertEqual(restored.x, 50)
+        self.assertEqual(restored.y, 50)
+        self.assertEqual(restored.is_maximized, False)
+        self.assertEqual(restored.splitter_position, 380)
+        self.assertEqual(restored.last_filter_type, 4)
+        self.assertEqual(restored.last_search_text, "search query")
+        self.assertEqual(restored.last_selected_id, 99)
 
 
 if __name__ == '__main__':
