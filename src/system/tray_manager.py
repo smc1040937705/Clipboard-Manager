@@ -163,7 +163,8 @@ class TrayManager(QObject):
     
     def _on_tray_activated(self, reason):
         """托盘图标被激活"""
-        if reason == QSystemTrayIcon.Trigger:
+        if reason == QSystemTrayIcon.ActivationReason.Trigger or \
+           reason == QSystemTrayIcon.ActivationReason.DoubleClick:
             self.show_window_requested.emit()
     
     def _on_pause_toggled(self, checked: bool):
