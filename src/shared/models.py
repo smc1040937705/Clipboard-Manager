@@ -113,20 +113,26 @@ class ClipboardRecord:
     
     def to_csv_row(self) -> dict:
         """转换为 CSV 行数据"""
+        # 图片数据使用 Base64 编码存储
+        image_data_str = ""
+        if self.content_type == ClipboardType.IMAGE and self.image_data:
+            image_data_str = base64.b64encode(self.image_data).decode('utf-8')
+
         return {
             "id": self.id,
             "content_type": self.content_type.name,
             "content": self.text_content or "",
             "file_paths": "|".join(self.file_paths) if self.file_paths else "",
+            "image_data": image_data_str,
             "created_at": self.created_at.isoformat(),
             "is_favorite": "1" if self.is_favorite else "0",
             "is_pinned": "1" if self.is_pinned else "0",
         }
-    
+
     @staticmethod
     def get_csv_headers() -> List[str]:
         """获取 CSV 表头"""
-        return ["id", "content_type", "content", "file_paths", "created_at", "is_favorite", "is_pinned"]
+        return ["id", "content_type", "content", "file_paths", "image_data", "created_at", "is_favorite", "is_pinned"]
 
 
 @dataclass

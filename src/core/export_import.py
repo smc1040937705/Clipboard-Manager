@@ -6,13 +6,14 @@
 import json
 import csv
 import os
+import base64
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Callable
 from io import StringIO
 
 from ..shared.models import ClipboardRecord
-from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME
+from ..shared.constants import JSON_EXPORT_VERSION, APP_NAME, APP_VERSION
 from ..storage.repository import ClipboardRepository
 
 
@@ -212,14 +213,14 @@ class ExportImportManager:
                     # 解析内容类型
                     content_type_name = row.get('content_type', 'TEXT')
                     content_type = ClipboardType[content_type_name]
-                    
+
                     # 创建记录
                     record = ClipboardRecord(
                         content_type=content_type,
                         is_favorite=row.get('is_favorite', '0') == '1',
                         is_pinned=row.get('is_pinned', '0') == '1',
                     )
-                    
+
                     # 设置内容
                     if content_type == ClipboardType.TEXT:
                         record.text_content = row.get('content', '')
@@ -227,26 +228,31 @@ class ExportImportManager:
                         file_paths_str = row.get('file_paths', '')
                         if file_paths_str:
                             record.file_paths = file_paths_str.split('|')
-                    
+                    elif content_type == ClipboardType.IMAGE:
+                        # 从 Base64 解码图片数据
+                        image_data_str = row.get('image_data', '')
+                        if image_data_str:
+                            record.image_data = base64.b64decode(image_data_str)
+
                     # 解析时间
                     created_at_str = row.get('created_at', '')
                     if created_at_str:
                         record.created_at = datetime.fromisoformat(created_at_str)
-                    
+
                     # 检查重复
                     if record.content_hash in existing_hashes:
                         result['skipped'] += 1
                         continue
-                    
+
                     # 保存到数据库
                     self.repository.create(record)
                     existing_hashes.add(record.content_hash)
                     result['imported'] += 1
-                    
+
                     # 进度回调
                     if progress_callback:
                         progress_callback(i + 1, total)
-                
+
                 except Exception as e:
                     result['errors'].append(f"行 {i+1}: {str(e)}")
             

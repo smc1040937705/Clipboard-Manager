@@ -112,10 +112,10 @@ class ClipboardListener(QObject):
                 for url in mime_data.urls():
                     if url.isLocalFile():
                         file_paths.append(url.toLocalFile())
-                
+
                 if file_paths:
                     record = ClipboardRecord(
-                        content_type=ClipboardType.TEXT,
+                        content_type=ClipboardType.FILE,
                         file_paths=file_paths
                     )
             
